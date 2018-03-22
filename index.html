@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<title>
+			Automata Factory
+		</title>
+		<script src = "https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		
+		<!-- include the script -->
+		<script src = "DiGraph.js"></script>
+        <script src = "Test.js"></script>
+		
+		 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link href="styles.css" rel="stylesheet" type="text/css" />
+	
+	<style>
+		.modal-header, h4, .close {
+			background-color: #82CAFF;
+			color:white !important;
+			text-align: center;
+			font-size: 30px;
+		}
+		.modal-footer {
+			background-color: #f9f9f9;
+			text-align: center;
+		}
+		#items{
+			list-style:none;
+			margin:0px;
+			margin-top:4px;
+			padding-left:10px;
+			padding-right:10px;
+			padding-bottom:3px;
+			font-size:10px;
+			color: #333333;
+			
+		}
+		hr { width: 85%; 
+			background-color:#E4E4E4;
+			border-color:#E4E4E4;
+			color:#E4E4E4;
+		}
+		#testInput{
+			display:none;
+			position:fixed;
+			border:1px solid #B2B2B2;
+			width:100px;
+			background:#F9F9F9;
+			box-shadow: 3px 3px 2px #E9E9E9;
+			border-radius:4px;
+			text-align: center;
+		}
+		#customContextMenu{
+			display:none;
+			position:fixed;
+			border:1px solid #B2B2B2;
+			width:50px;
+			background:#F9F9F9;
+			box-shadow: 3px 3px 2px #E9E9E9;
+			border-radius:4px;
+			text-align: center;
+		}
+
+		li{
+			padding: 3px;
+			padding-left:10px;
+		}
+
+		#items :hover{
+			color: white;
+			background:#284570;
+			border-radius:2px;
+		}
+		.astext {
+			background:none;
+			border:none;
+			margin:0;
+			padding:0;
+			width: 100%;
+			margin-top:1px;
+			margin-bottom:1px;
+		}
+	</style>
+		
+	</head>
+	
+	<body>
+		
+		
+		<canvas id = "myCanvas"></canvas>
+		
+		
+
+	  <!-- nodeConfig -->
+	  <div class="modal fade" id="nodeConfig" role="dialog">
+		<div class="modal-dialog">
+		  <div class="modal-content">
+			<div class="modal-header" style="padding:15px 50px;">
+			  <button type="button" id="nodeConfigClose" class="close">&times;</button>
+			  <h4 id="nodeConfigTitle">S1 Node</h4>
+			</div>
+			<div class="modal-body" style="padding:20px 50px;">
+			  <form role="form">
+				<div class="form-group">
+				  <label for="nodeConfigId">ID: </label>
+				  <input type="text" class="form-control" id="nodeConfigId" placeholder="S_1">
+				</div>
+				<div class="form-group">
+				  <label for="nodeConfigColor">Color:</label>
+				  <input type="text" class="form-control" id="nodeConfigColor" placeholder="#ffffff">
+				</div>
+				<div class="checkbox">
+				  <label><input type="checkbox" id="nodeConfigAccepting" value="" checked>Accepting</label>
+				</div>
+				<div class="checkbox">
+				  <label><input type="checkbox" id="nodeConfigInitial" value="">Initial</label>
+				</div>
+			  </form>
+			</div>
+			<div class="modal-footer">
+			  <button type="submit" id="nodeConfigSave" class="btn btn-success btn-success pull-middle" >Save</button>
+			  <button type="cancel" id="nodeConfigCancel" class="btn btn-default btn-default pull-middle">Cancel</button>
+			</div>
+		  </div>
+		</div>
+	  </div> 
+	  
+	  
+	  <!-- transitionConfig -->
+	  <div class="modal fade" id="transitionConfig" role="dialog">
+		<div class="modal-dialog">
+		  <div class="modal-content">
+			<div class="modal-header" style="padding:15px 50px;">
+			  <button type="button" id="transitionConfigClose" class="close">&times;</button>
+			  <h4 id="transitionConfigTitle">S1 Node</h4>
+			</div>
+			<div class="modal-body" style="padding:20px 50px;">
+			  <form role="form">
+				<div class="form-group">
+				  <label for="transitionConfigFrom">From: </label>
+				  <input type="text" class="form-control" id="transitionConfigFrom" placeholder="Q0" disabled>
+				</div>
+				<div class="form-group">
+				  <label for="transitionConfigTo">To:</label>
+				  <input type="text" class="form-control" id="transitionConfigTo" placeholder="Q1">
+				</div>
+				<div class="form-group">
+				  <label for="transitionConfigCondition">Condition:</label>
+				  <input type="text" class="form-control" id="transitionConfigCondition" placeholder="0">
+				</div>
+			  </form>
+			</div>
+			<div class="modal-footer">  
+			  <button type="submit" id="transitionConfigAdd" class="btn btn-success btn-success pull-middle" >Add</button>
+			  <button type="cancel" id="transitionConfigCancel" class="btn btn-default btn-default pull-middle">Cancel</button>
+			  <button type="delete" id="transitionConfigDelete" class="btn btn-danger btn-success pull-middle" style="float: right;">Delete</button>
+			</div>
+		  </div>
+		</div>
+	  </div>
+
+		<div id='customContextMenu'>
+			<ul id='items'>
+				<button type="submit" class="astext" id="customContextMenuTestInput" >Test</button>
+				<button type="submit" class="astext" id="customContextMenuExport" >Export</button>
+				<button type="submit" class="astext" id="customContextMenuImport" >Import</button>
+			</ul>
+		</div>
+	  
+	
+		<div id='testInput'>
+			<ul id='items'>
+				Test Input
+				<input type="text" id="testInputText" placeholder="1011010" style="width:70px;">
+				<button type="submit" id="testInputSubmit" >Test</button>
+			</ul>
+		</div>
+	
+	
+		
+	</body>
+
+
+</html>
